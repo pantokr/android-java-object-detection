@@ -84,9 +84,7 @@ public class CameraUtils {
                         @OptIn(markerClass = ExperimentalGetImage.class)
                         @Override
                         public void analyze(@NonNull ImageProxy image) {
-
                             analyzerUtils.analyze(image);
-                            // cloudVision.processImage(image);
                         }
                     });
 

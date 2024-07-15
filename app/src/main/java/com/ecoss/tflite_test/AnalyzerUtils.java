@@ -34,6 +34,10 @@ import java.util.Map;
 public class AnalyzerUtils {
     private static final String TAG = "AR-HUD";
     private static final int INPUT_SIZE = 320; // EfficientDet Lite0 모델의 입력 크기
+    // private static final int INPUT_SIZE = 384; // EfficientDet Lite1 모델의 입력 크기
+    // private static final int INPUT_SIZE = 448; // EfficientDet Lite2 모델의 입력 크기
+    // private static final int INPUT_SIZE = 512; // EfficientDet Lite3 모델의 입력 크기
+    // private static final int INPUT_SIZE = 640; // EfficientDet Lite4 모델의 입력 크기
     private static final float CONFIDENCE_THRESHOLD = 0.5f;
     private Activity dstActivity;
     private TextView textView;
@@ -44,15 +48,13 @@ public class AnalyzerUtils {
 
     public AnalyzerUtils(Activity dstActivity) {
         try {
-            tflite = new Interpreter(loadModelFile(dstActivity, "EfficientDet.tflite"));
+            tflite = new Interpreter(loadModelFile(dstActivity, "EfficientDet0.tflite"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         objectMarker = new ObjectMarker(dstActivity);
         this.dstActivity = dstActivity;
-
-
     }
 
     @OptIn(markerClass = ExperimentalGetImage.class)
@@ -102,6 +104,8 @@ public class AnalyzerUtils {
                         outputLocations[0][i][3] * INPUT_SIZE,
                         outputLocations[0][i][2] * INPUT_SIZE
                 );
+
+                // 원래 이미지 크기로 복구
                 boundingBox.left = boundingBox.left * imageWidth / INPUT_SIZE;
                 boundingBox.top = boundingBox.top * imageHeight / INPUT_SIZE;
                 boundingBox.right = boundingBox.right * imageWidth / INPUT_SIZE;
@@ -114,7 +118,7 @@ public class AnalyzerUtils {
                 Log.d(TAG, "Detected object: Class=" + category + ", Score=" + score + ", Box=" + boundingBox);
 
                 textView = this.dstActivity.findViewById(R.id.textView);
-                textView.setText( category);
+                textView.setText(category);
             }
         }
 
