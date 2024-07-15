@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 
 
 public class CameraUtils {
-    private String TAG = "AR-HUD";
+    private String TAG = "VAR-TEST";
     private Activity dstActivity;
     private AnalyzerUtils analyzerUtils;
     // private CloudVision cloudVision;

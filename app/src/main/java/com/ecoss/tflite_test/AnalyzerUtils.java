@@ -26,13 +26,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AnalyzerUtils {
-    private static final String TAG = "AR-HUD";
+    private static final String TAG = "VAR-TEST";
     private static final int INPUT_SIZE = 320; // EfficientDet Lite0 모델의 입력 크기
     // private static final int INPUT_SIZE = 384; // EfficientDet Lite1 모델의 입력 크기
     // private static final int INPUT_SIZE = 448; // EfficientDet Lite2 모델의 입력 크기
@@ -40,7 +41,6 @@ public class AnalyzerUtils {
     // private static final int INPUT_SIZE = 640; // EfficientDet Lite4 모델의 입력 크기
     private static final float CONFIDENCE_THRESHOLD = 0.5f;
     private Activity dstActivity;
-    private TextView textView;
 
     Interpreter tflite;
 
@@ -94,9 +94,9 @@ public class AnalyzerUtils {
 
         tflite.runForMultipleInputsOutputs(new Object[]{inputImageBuffer.getBuffer()}, outputMap);
 
+        Map<RectF, String> boxes = new HashMap<RectF, String>();
         // 결과 해석
-//        for (int i = 0; i < detectionsCount; i++) {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < detectionsCount; i++) {
             if (outputScores[0][i] >= CONFIDENCE_THRESHOLD) {
                 RectF boundingBox = new RectF(
                         outputLocations[0][i][1] * INPUT_SIZE,
@@ -110,17 +110,20 @@ public class AnalyzerUtils {
                 boundingBox.top = boundingBox.top * imageHeight / INPUT_SIZE;
                 boundingBox.right = boundingBox.right * imageWidth / INPUT_SIZE;
                 boundingBox.bottom = boundingBox.bottom * imageHeight / INPUT_SIZE;
-                objectMarker.updateRect(boundingBox);
+
+                // objectMarker.updateRect(boundingBox, i);
 
                 int detectedClass = (int) outputClasses[0][i];
-                float score = outputScores[0][i];
                 String category = items.get(detectedClass);
-                Log.d(TAG, "Detected object: Class=" + category + ", Score=" + score + ", Box=" + boundingBox);
 
-                textView = this.dstActivity.findViewById(R.id.textView);
-                textView.setText(category);
+                boxes.put(boundingBox, category);
+
+                float score = outputScores[0][i];
+                // Log.d(TAG, "Detected object: Class=" + category + ", Score=" + score + ", Box=" + boundingBox);
             }
         }
+
+        objectMarker.updateRect(boxes);
 
         image.close();
     }
