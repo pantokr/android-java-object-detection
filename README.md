@@ -12,5 +12,5 @@ EfficientDet.tflite을 이용해 Android에서 객체 인식을 하는 기본 �
 
 ### 1. Git Clone  
 ```bash
-git clone https://github.com/pantokr/unity3d-csharp-gyudoku.git
+git clone https://github.com/pantokr/android-java-object-detection.git
 ```
